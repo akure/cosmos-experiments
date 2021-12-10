@@ -2,6 +2,10 @@ export interface BlogMsgCreatePostResponse {
     /** @format uint64 */
     id?: string;
 }
+export interface BlogQueryPostsResponse {
+    title?: string;
+    body?: string;
+}
 export interface ProtobufAny {
     "@type"?: string;
 }
@@ -69,5 +73,14 @@ export declare class HttpClient<SecurityDataType = unknown> {
  * @version version not set
  */
 export declare class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
+    /**
+     * No description
+     *
+     * @tags Query
+     * @name QueryPosts
+     * @summary Queries a list of posts items.
+     * @request GET:/cosmonaut/blog/blog/posts
+     */
+    queryPosts: (params?: RequestParams) => Promise<HttpResponse<BlogQueryPostsResponse, RpcStatus>>;
 }
 export {};

@@ -14,6 +14,11 @@ export interface BlogMsgCreatePostResponse {
   id?: string;
 }
 
+export interface BlogQueryPostsResponse {
+  title?: string;
+  body?: string;
+}
+
 export interface ProtobufAny {
   "@type"?: string;
 }
@@ -220,4 +225,20 @@ export class HttpClient<SecurityDataType = unknown> {
  * @title blog/genesis.proto
  * @version version not set
  */
-export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {}
+export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryPosts
+   * @summary Queries a list of posts items.
+   * @request GET:/cosmonaut/blog/blog/posts
+   */
+  queryPosts = (params: RequestParams = {}) =>
+    this.request<BlogQueryPostsResponse, RpcStatus>({
+      path: `/cosmonaut/blog/blog/posts`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+}

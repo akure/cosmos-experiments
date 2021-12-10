@@ -4,6 +4,40 @@ info:
   name: ''
   description: ''
 paths:
+  /cosmonaut/blog/blog/posts:
+    get:
+      summary: Queries a list of posts items.
+      operationId: CosmonautBlogBlogPosts
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+              body:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
   /cosmos/authz/v1beta1/grants:
     get:
       summary: 'Returns list of `Authorization`, granted to the grantee by the granter.'
@@ -12508,6 +12542,13 @@ definitions:
       id:
         type: string
         format: uint64
+  cosmonaut.blog.blog.QueryPostsResponse:
+    type: object
+    properties:
+      title:
+        type: string
+      body:
+        type: string
   google.protobuf.Any:
     type: object
     properties:
