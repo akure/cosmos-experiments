@@ -17,6 +17,12 @@ const (
 	MemStoreKey = "mem_blog"
 )
 
+// KV store prefix keys
+const (
+	PostKey      = "Post-value-"
+	PostCountKey = "Post-count-"
+)
+
 func KeyPrefix(p string) []byte {
 	return []byte(p)
 }
