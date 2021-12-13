@@ -3,8 +3,14 @@ import * as Long from "long";
 import { util, configure, Writer, Reader } from "protobufjs/minimal";
 import { Post } from "../blog/post";
 import { SentPost } from "../blog/sent_post";
+import { TimedoutPost } from "../blog/timedout_post";
 export const protobufPackage = "cosmonaut.planet.blog";
-const baseGenesisState = { portId: "", postCount: 0, sentPostCount: 0 };
+const baseGenesisState = {
+    portId: "",
+    postCount: 0,
+    sentPostCount: 0,
+    timedoutPostCount: 0,
+};
 export const GenesisState = {
     encode(message, writer = Writer.create()) {
         if (message.portId !== "") {
@@ -22,6 +28,12 @@ export const GenesisState = {
         if (message.sentPostCount !== 0) {
             writer.uint32(40).uint64(message.sentPostCount);
         }
+        for (const v of message.timedoutPostList) {
+            TimedoutPost.encode(v, writer.uint32(50).fork()).ldelim();
+        }
+        if (message.timedoutPostCount !== 0) {
+            writer.uint32(56).uint64(message.timedoutPostCount);
+        }
         return writer;
     },
     decode(input, length) {
@@ -30,6 +42,7 @@ export const GenesisState = {
         const message = { ...baseGenesisState };
         message.postList = [];
         message.sentPostList = [];
+        message.timedoutPostList = [];
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
@@ -48,6 +61,12 @@ export const GenesisState = {
                 case 5:
                     message.sentPostCount = longToNumber(reader.uint64());
                     break;
+                case 6:
+                    message.timedoutPostList.push(TimedoutPost.decode(reader, reader.uint32()));
+                    break;
+                case 7:
+                    message.timedoutPostCount = longToNumber(reader.uint64());
+                    break;
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -59,6 +78,7 @@ export const GenesisState = {
         const message = { ...baseGenesisState };
         message.postList = [];
         message.sentPostList = [];
+        message.timedoutPostList = [];
         if (object.portId !== undefined && object.portId !== null) {
             message.portId = String(object.portId);
         }
@@ -87,6 +107,19 @@ export const GenesisState = {
         else {
             message.sentPostCount = 0;
         }
+        if (object.timedoutPostList !== undefined &&
+            object.timedoutPostList !== null) {
+            for (const e of object.timedoutPostList) {
+                message.timedoutPostList.push(TimedoutPost.fromJSON(e));
+            }
+        }
+        if (object.timedoutPostCount !== undefined &&
+            object.timedoutPostCount !== null) {
+            message.timedoutPostCount = Number(object.timedoutPostCount);
+        }
+        else {
+            message.timedoutPostCount = 0;
+        }
         return message;
     },
     toJSON(message) {
@@ -107,12 +140,21 @@ export const GenesisState = {
         }
         message.sentPostCount !== undefined &&
             (obj.sentPostCount = message.sentPostCount);
+        if (message.timedoutPostList) {
+            obj.timedoutPostList = message.timedoutPostList.map((e) => e ? TimedoutPost.toJSON(e) : undefined);
+        }
+        else {
+            obj.timedoutPostList = [];
+        }
+        message.timedoutPostCount !== undefined &&
+            (obj.timedoutPostCount = message.timedoutPostCount);
         return obj;
     },
     fromPartial(object) {
         const message = { ...baseGenesisState };
         message.postList = [];
         message.sentPostList = [];
+        message.timedoutPostList = [];
         if (object.portId !== undefined && object.portId !== null) {
             message.portId = object.portId;
         }
@@ -140,6 +182,19 @@ export const GenesisState = {
         }
         else {
             message.sentPostCount = 0;
+        }
+        if (object.timedoutPostList !== undefined &&
+            object.timedoutPostList !== null) {
+            for (const e of object.timedoutPostList) {
+                message.timedoutPostList.push(TimedoutPost.fromPartial(e));
+            }
+        }
+        if (object.timedoutPostCount !== undefined &&
+            object.timedoutPostCount !== null) {
+            message.timedoutPostCount = object.timedoutPostCount;
+        }
+        else {
+            message.timedoutPostCount = 0;
         }
         return message;
     },

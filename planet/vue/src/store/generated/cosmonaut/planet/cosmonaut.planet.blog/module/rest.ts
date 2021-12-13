@@ -19,13 +19,22 @@ export interface BlogMsgCreateSentPostResponse {
   id?: string;
 }
 
+export interface BlogMsgCreateTimedoutPostResponse {
+  /** @format uint64 */
+  id?: string;
+}
+
 export type BlogMsgDeletePostResponse = object;
 
 export type BlogMsgDeleteSentPostResponse = object;
 
+export type BlogMsgDeleteTimedoutPostResponse = object;
+
 export type BlogMsgUpdatePostResponse = object;
 
 export type BlogMsgUpdateSentPostResponse = object;
+
+export type BlogMsgUpdateTimedoutPostResponse = object;
 
 export interface BlogPost {
   /** @format uint64 */
@@ -65,6 +74,21 @@ export interface BlogQueryAllSentPostResponse {
   pagination?: V1Beta1PageResponse;
 }
 
+export interface BlogQueryAllTimedoutPostResponse {
+  TimedoutPost?: BlogTimedoutPost[];
+
+  /**
+   * PageResponse is to be embedded in gRPC response messages where the
+   * corresponding request message has used PageRequest.
+   *
+   *  message SomeResponse {
+   *          repeated Bar results = 1;
+   *          PageResponse page = 2;
+   *  }
+   */
+  pagination?: V1Beta1PageResponse;
+}
+
 export interface BlogQueryGetPostResponse {
   Post?: BlogPost;
 }
@@ -73,10 +97,22 @@ export interface BlogQueryGetSentPostResponse {
   SentPost?: BlogSentPost;
 }
 
+export interface BlogQueryGetTimedoutPostResponse {
+  TimedoutPost?: BlogTimedoutPost;
+}
+
 export interface BlogSentPost {
   /** @format uint64 */
   id?: string;
   postID?: string;
+  title?: string;
+  chain?: string;
+  creator?: string;
+}
+
+export interface BlogTimedoutPost {
+  /** @format uint64 */
+  id?: string;
   title?: string;
   chain?: string;
   creator?: string;
@@ -427,6 +463,48 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   querySentPost = (id: string, params: RequestParams = {}) =>
     this.request<BlogQueryGetSentPostResponse, RpcStatus>({
       path: `/cosmonaut/planet/blog/sentPost/${id}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryTimedoutPostAll
+   * @summary Queries a list of timedoutPost items.
+   * @request GET:/cosmonaut/planet/blog/timedoutPost
+   */
+  queryTimedoutPostAll = (
+    query?: {
+      "pagination.key"?: string;
+      "pagination.offset"?: string;
+      "pagination.limit"?: string;
+      "pagination.countTotal"?: boolean;
+      "pagination.reverse"?: boolean;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<BlogQueryAllTimedoutPostResponse, RpcStatus>({
+      path: `/cosmonaut/planet/blog/timedoutPost`,
+      method: "GET",
+      query: query,
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryTimedoutPost
+   * @summary Queries a timedoutPost by id.
+   * @request GET:/cosmonaut/planet/blog/timedoutPost/{id}
+   */
+  queryTimedoutPost = (id: string, params: RequestParams = {}) =>
+    this.request<BlogQueryGetTimedoutPostResponse, RpcStatus>({
+      path: `/cosmonaut/planet/blog/timedoutPost/${id}`,
       method: "GET",
       format: "json",
       ...params,

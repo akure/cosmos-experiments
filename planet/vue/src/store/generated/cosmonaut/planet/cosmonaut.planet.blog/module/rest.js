@@ -194,5 +194,34 @@ export class Api extends HttpClient {
             format: "json",
             ...params,
         });
+        /**
+         * No description
+         *
+         * @tags Query
+         * @name QueryTimedoutPostAll
+         * @summary Queries a list of timedoutPost items.
+         * @request GET:/cosmonaut/planet/blog/timedoutPost
+         */
+        this.queryTimedoutPostAll = (query, params = {}) => this.request({
+            path: `/cosmonaut/planet/blog/timedoutPost`,
+            method: "GET",
+            query: query,
+            format: "json",
+            ...params,
+        });
+        /**
+         * No description
+         *
+         * @tags Query
+         * @name QueryTimedoutPost
+         * @summary Queries a timedoutPost by id.
+         * @request GET:/cosmonaut/planet/blog/timedoutPost/{id}
+         */
+        this.queryTimedoutPost = (id, params = {}) => this.request({
+            path: `/cosmonaut/planet/blog/timedoutPost/${id}`,
+            method: "GET",
+            format: "json",
+            ...params,
+        });
     }
 }
