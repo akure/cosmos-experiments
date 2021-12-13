@@ -13049,6 +13049,8 @@ definitions:
     type: object
   cosmonaut.planet.blog.MsgDeleteTimedoutPostResponse:
     type: object
+  cosmonaut.planet.blog.MsgSendIbcPostResponse:
+    type: object
   cosmonaut.planet.blog.MsgUpdatePostResponse:
     type: object
   cosmonaut.planet.blog.MsgUpdateSentPostResponse:
