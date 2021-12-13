@@ -14,9 +14,18 @@ export interface BlogMsgCreatePostResponse {
   id?: string;
 }
 
+export interface BlogMsgCreateSentPostResponse {
+  /** @format uint64 */
+  id?: string;
+}
+
 export type BlogMsgDeletePostResponse = object;
 
+export type BlogMsgDeleteSentPostResponse = object;
+
 export type BlogMsgUpdatePostResponse = object;
+
+export type BlogMsgUpdateSentPostResponse = object;
 
 export interface BlogPost {
   /** @format uint64 */
@@ -41,8 +50,36 @@ export interface BlogQueryAllPostResponse {
   pagination?: V1Beta1PageResponse;
 }
 
+export interface BlogQueryAllSentPostResponse {
+  SentPost?: BlogSentPost[];
+
+  /**
+   * PageResponse is to be embedded in gRPC response messages where the
+   * corresponding request message has used PageRequest.
+   *
+   *  message SomeResponse {
+   *          repeated Bar results = 1;
+   *          PageResponse page = 2;
+   *  }
+   */
+  pagination?: V1Beta1PageResponse;
+}
+
 export interface BlogQueryGetPostResponse {
   Post?: BlogPost;
+}
+
+export interface BlogQueryGetSentPostResponse {
+  SentPost?: BlogSentPost;
+}
+
+export interface BlogSentPost {
+  /** @format uint64 */
+  id?: string;
+  postID?: string;
+  title?: string;
+  chain?: string;
+  creator?: string;
 }
 
 export interface ProtobufAny {
@@ -348,6 +385,48 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryPost = (id: string, params: RequestParams = {}) =>
     this.request<BlogQueryGetPostResponse, RpcStatus>({
       path: `/cosmonaut/planet/blog/post/${id}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QuerySentPostAll
+   * @summary Queries a list of sentPost items.
+   * @request GET:/cosmonaut/planet/blog/sentPost
+   */
+  querySentPostAll = (
+    query?: {
+      "pagination.key"?: string;
+      "pagination.offset"?: string;
+      "pagination.limit"?: string;
+      "pagination.countTotal"?: boolean;
+      "pagination.reverse"?: boolean;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<BlogQueryAllSentPostResponse, RpcStatus>({
+      path: `/cosmonaut/planet/blog/sentPost`,
+      method: "GET",
+      query: query,
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QuerySentPost
+   * @summary Queries a sentPost by id.
+   * @request GET:/cosmonaut/planet/blog/sentPost/{id}
+   */
+  querySentPost = (id: string, params: RequestParams = {}) =>
+    this.request<BlogQueryGetSentPostResponse, RpcStatus>({
+      path: `/cosmonaut/planet/blog/sentPost/${id}`,
       method: "GET",
       format: "json",
       ...params,

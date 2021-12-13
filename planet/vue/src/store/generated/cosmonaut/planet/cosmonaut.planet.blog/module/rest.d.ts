@@ -2,8 +2,14 @@ export interface BlogMsgCreatePostResponse {
     /** @format uint64 */
     id?: string;
 }
+export interface BlogMsgCreateSentPostResponse {
+    /** @format uint64 */
+    id?: string;
+}
 export declare type BlogMsgDeletePostResponse = object;
+export declare type BlogMsgDeleteSentPostResponse = object;
 export declare type BlogMsgUpdatePostResponse = object;
+export declare type BlogMsgUpdateSentPostResponse = object;
 export interface BlogPost {
     /** @format uint64 */
     id?: string;
@@ -24,8 +30,32 @@ export interface BlogQueryAllPostResponse {
      */
     pagination?: V1Beta1PageResponse;
 }
+export interface BlogQueryAllSentPostResponse {
+    SentPost?: BlogSentPost[];
+    /**
+     * PageResponse is to be embedded in gRPC response messages where the
+     * corresponding request message has used PageRequest.
+     *
+     *  message SomeResponse {
+     *          repeated Bar results = 1;
+     *          PageResponse page = 2;
+     *  }
+     */
+    pagination?: V1Beta1PageResponse;
+}
 export interface BlogQueryGetPostResponse {
     Post?: BlogPost;
+}
+export interface BlogQueryGetSentPostResponse {
+    SentPost?: BlogSentPost;
+}
+export interface BlogSentPost {
+    /** @format uint64 */
+    id?: string;
+    postID?: string;
+    title?: string;
+    chain?: string;
+    creator?: string;
 }
 export interface ProtobufAny {
     "@type"?: string;
@@ -170,5 +200,29 @@ export declare class Api<SecurityDataType extends unknown> extends HttpClient<Se
      * @request GET:/cosmonaut/planet/blog/post/{id}
      */
     queryPost: (id: string, params?: RequestParams) => Promise<HttpResponse<BlogQueryGetPostResponse, RpcStatus>>;
+    /**
+     * No description
+     *
+     * @tags Query
+     * @name QuerySentPostAll
+     * @summary Queries a list of sentPost items.
+     * @request GET:/cosmonaut/planet/blog/sentPost
+     */
+    querySentPostAll: (query?: {
+        "pagination.key"?: string;
+        "pagination.offset"?: string;
+        "pagination.limit"?: string;
+        "pagination.countTotal"?: boolean;
+        "pagination.reverse"?: boolean;
+    }, params?: RequestParams) => Promise<HttpResponse<BlogQueryAllSentPostResponse, RpcStatus>>;
+    /**
+     * No description
+     *
+     * @tags Query
+     * @name QuerySentPost
+     * @summary Queries a sentPost by id.
+     * @request GET:/cosmonaut/planet/blog/sentPost/{id}
+     */
+    querySentPost: (id: string, params?: RequestParams) => Promise<HttpResponse<BlogQueryGetSentPostResponse, RpcStatus>>;
 }
 export {};

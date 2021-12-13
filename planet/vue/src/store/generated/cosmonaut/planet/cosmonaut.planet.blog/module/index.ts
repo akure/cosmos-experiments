@@ -4,12 +4,18 @@ import { StdFee } from "@cosmjs/launchpad";
 import { SigningStargateClient } from "@cosmjs/stargate";
 import { Registry, OfflineSigner, EncodeObject, DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { Api } from "./rest";
+import { MsgCreateSentPost } from "./types/blog/tx";
+import { MsgUpdateSentPost } from "./types/blog/tx";
+import { MsgDeleteSentPost } from "./types/blog/tx";
 import { MsgCreatePost } from "./types/blog/tx";
 import { MsgUpdatePost } from "./types/blog/tx";
 import { MsgDeletePost } from "./types/blog/tx";
 
 
 const types = [
+  ["/cosmonaut.planet.blog.MsgCreateSentPost", MsgCreateSentPost],
+  ["/cosmonaut.planet.blog.MsgUpdateSentPost", MsgUpdateSentPost],
+  ["/cosmonaut.planet.blog.MsgDeleteSentPost", MsgDeleteSentPost],
   ["/cosmonaut.planet.blog.MsgCreatePost", MsgCreatePost],
   ["/cosmonaut.planet.blog.MsgUpdatePost", MsgUpdatePost],
   ["/cosmonaut.planet.blog.MsgDeletePost", MsgDeletePost],
@@ -41,6 +47,9 @@ const txClient = async (wallet: OfflineSigner, { addr: addr }: TxClientOptions =
 
   return {
     signAndBroadcast: (msgs: EncodeObject[], { fee, memo }: SignAndBroadcastOptions = {fee: defaultFee, memo: ""}) => client.signAndBroadcast(address, msgs, fee,memo),
+    msgCreateSentPost: (data: MsgCreateSentPost): EncodeObject => ({ typeUrl: "/cosmonaut.planet.blog.MsgCreateSentPost", value: data }),
+    msgUpdateSentPost: (data: MsgUpdateSentPost): EncodeObject => ({ typeUrl: "/cosmonaut.planet.blog.MsgUpdateSentPost", value: data }),
+    msgDeleteSentPost: (data: MsgDeleteSentPost): EncodeObject => ({ typeUrl: "/cosmonaut.planet.blog.MsgDeleteSentPost", value: data }),
     msgCreatePost: (data: MsgCreatePost): EncodeObject => ({ typeUrl: "/cosmonaut.planet.blog.MsgCreatePost", value: data }),
     msgUpdatePost: (data: MsgUpdatePost): EncodeObject => ({ typeUrl: "/cosmonaut.planet.blog.MsgUpdatePost", value: data }),
     msgDeletePost: (data: MsgDeletePost): EncodeObject => ({ typeUrl: "/cosmonaut.planet.blog.MsgDeletePost", value: data }),

@@ -4,6 +4,7 @@ package cosmonaut.planet.blog;
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "blog/post.proto";
+import "blog/sent_post.proto";
 // this line is used by starport scaffolding # 1
 import "gogoproto/gogo.proto";
 
@@ -19,6 +20,16 @@ service Query {
 	// Queries a list of post items.
 	rpc PostAll(QueryAllPostRequest) returns (QueryAllPostResponse) {
 		option (google.api.http).get = "/cosmonaut/planet/blog/post";
+	}
+
+// Queries a sentPost by id.
+	rpc SentPost(QueryGetSentPostRequest) returns (QueryGetSentPostResponse) {
+		option (google.api.http).get = "/cosmonaut/planet/blog/sentPost/{id}";
+	}
+
+	// Queries a list of sentPost items.
+	rpc SentPostAll(QueryAllSentPostRequest) returns (QueryAllSentPostResponse) {
+		option (google.api.http).get = "/cosmonaut/planet/blog/sentPost";
 	}
 
 // this line is used by starport scaffolding # 2
@@ -38,6 +49,23 @@ message QueryAllPostRequest {
 
 message QueryAllPostResponse {
 	repeated Post Post = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetSentPostRequest {
+	uint64 id = 1;
+}
+
+message QueryGetSentPostResponse {
+	SentPost SentPost = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllSentPostRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllSentPostResponse {
+	repeated SentPost SentPost = 1 [(gogoproto.nullable) = false];
 	cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 

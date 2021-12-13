@@ -2,8 +2,9 @@
 import * as Long from "long";
 import { util, configure, Writer, Reader } from "protobufjs/minimal";
 import { Post } from "../blog/post";
+import { SentPost } from "../blog/sent_post";
 export const protobufPackage = "cosmonaut.planet.blog";
-const baseGenesisState = { portId: "", postCount: 0 };
+const baseGenesisState = { portId: "", postCount: 0, sentPostCount: 0 };
 export const GenesisState = {
     encode(message, writer = Writer.create()) {
         if (message.portId !== "") {
@@ -15,6 +16,12 @@ export const GenesisState = {
         if (message.postCount !== 0) {
             writer.uint32(24).uint64(message.postCount);
         }
+        for (const v of message.sentPostList) {
+            SentPost.encode(v, writer.uint32(34).fork()).ldelim();
+        }
+        if (message.sentPostCount !== 0) {
+            writer.uint32(40).uint64(message.sentPostCount);
+        }
         return writer;
     },
     decode(input, length) {
@@ -22,6 +29,7 @@ export const GenesisState = {
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseGenesisState };
         message.postList = [];
+        message.sentPostList = [];
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
@@ -34,6 +42,12 @@ export const GenesisState = {
                 case 3:
                     message.postCount = longToNumber(reader.uint64());
                     break;
+                case 4:
+                    message.sentPostList.push(SentPost.decode(reader, reader.uint32()));
+                    break;
+                case 5:
+                    message.sentPostCount = longToNumber(reader.uint64());
+                    break;
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -44,6 +58,7 @@ export const GenesisState = {
     fromJSON(object) {
         const message = { ...baseGenesisState };
         message.postList = [];
+        message.sentPostList = [];
         if (object.portId !== undefined && object.portId !== null) {
             message.portId = String(object.portId);
         }
@@ -61,6 +76,17 @@ export const GenesisState = {
         else {
             message.postCount = 0;
         }
+        if (object.sentPostList !== undefined && object.sentPostList !== null) {
+            for (const e of object.sentPostList) {
+                message.sentPostList.push(SentPost.fromJSON(e));
+            }
+        }
+        if (object.sentPostCount !== undefined && object.sentPostCount !== null) {
+            message.sentPostCount = Number(object.sentPostCount);
+        }
+        else {
+            message.sentPostCount = 0;
+        }
         return message;
     },
     toJSON(message) {
@@ -73,11 +99,20 @@ export const GenesisState = {
             obj.postList = [];
         }
         message.postCount !== undefined && (obj.postCount = message.postCount);
+        if (message.sentPostList) {
+            obj.sentPostList = message.sentPostList.map((e) => e ? SentPost.toJSON(e) : undefined);
+        }
+        else {
+            obj.sentPostList = [];
+        }
+        message.sentPostCount !== undefined &&
+            (obj.sentPostCount = message.sentPostCount);
         return obj;
     },
     fromPartial(object) {
         const message = { ...baseGenesisState };
         message.postList = [];
+        message.sentPostList = [];
         if (object.portId !== undefined && object.portId !== null) {
             message.portId = object.portId;
         }
@@ -94,6 +129,17 @@ export const GenesisState = {
         }
         else {
             message.postCount = 0;
+        }
+        if (object.sentPostList !== undefined && object.sentPostList !== null) {
+            for (const e of object.sentPostList) {
+                message.sentPostList.push(SentPost.fromPartial(e));
+            }
+        }
+        if (object.sentPostCount !== undefined && object.sentPostCount !== null) {
+            message.sentPostCount = object.sentPostCount;
+        }
+        else {
+            message.sentPostCount = 0;
         }
         return message;
     },

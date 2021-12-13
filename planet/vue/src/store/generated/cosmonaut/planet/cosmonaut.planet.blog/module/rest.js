@@ -165,5 +165,34 @@ export class Api extends HttpClient {
             format: "json",
             ...params,
         });
+        /**
+         * No description
+         *
+         * @tags Query
+         * @name QuerySentPostAll
+         * @summary Queries a list of sentPost items.
+         * @request GET:/cosmonaut/planet/blog/sentPost
+         */
+        this.querySentPostAll = (query, params = {}) => this.request({
+            path: `/cosmonaut/planet/blog/sentPost`,
+            method: "GET",
+            query: query,
+            format: "json",
+            ...params,
+        });
+        /**
+         * No description
+         *
+         * @tags Query
+         * @name QuerySentPost
+         * @summary Queries a sentPost by id.
+         * @request GET:/cosmonaut/planet/blog/sentPost/{id}
+         */
+        this.querySentPost = (id, params = {}) => this.request({
+            path: `/cosmonaut/planet/blog/sentPost/${id}`,
+            method: "GET",
+            format: "json",
+            ...params,
+        });
     }
 }
